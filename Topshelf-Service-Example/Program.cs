@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Topshelf;
 
 namespace Topshelf_Service_Example
 {
@@ -10,6 +6,21 @@ namespace Topshelf_Service_Example
     {
         static void Main(string[] args)
         {
+            HostFactory.Run(x =>
+            {
+                x.Service<IService>(s =>
+                {
+                    s.ConstructUsing(name => new HeartbeatService());
+                    s.WhenStarted(myService => myService.Start());
+                    s.WhenStopped(myService => myService.Stop());
+                });
+
+                x.RunAsLocalSystem();
+
+                x.SetDescription("This service prints a heartbeat message every 10 seconds.");
+                x.SetDisplayName("Heartbeat service");
+                x.SetServiceName("HeartbeatService");
+            });
         }
     }
 }
