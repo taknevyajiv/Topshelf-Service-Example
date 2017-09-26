@@ -1,4 +1,5 @@
 ﻿using Topshelf;
+using Topshelf.Ninject;
 
 namespace Topshelf_Service_Example
 {
@@ -8,9 +9,11 @@ namespace Topshelf_Service_Example
         {
             HostFactory.Run(x =>
             {
+                x.UseNinject(new DependencyModule());
+
                 x.Service<IService>(s =>
                 {
-                    s.ConstructUsing(name => new HeartbeatService());
+                    s.ConstructUsingNinject();
                     s.WhenStarted(myService => myService.Start());
                     s.WhenStopped(myService => myService.Stop());
                 });
